@@ -24,19 +24,33 @@
 //      _serial.println(" cm");
 //  }
 
-      void Sonar::pinSetup(){
+      void Sonar::pinSetup() {
     //    _echoPin = echo;
     //    _trigPin = trig;
           pinMode(_trigPin,OUTPUT);
           pinMode(_echoPin,INPUT);
       }
 
-
-     Sonar::Sonar(int _trig,int _echo){
-        _echoPin = _echo;
-        _trigPin = _trig;
-         pinSetup();
+    Sonar::Sonar() {
+        
     }
+    
+     Sonar::Sonar(int trig,int echo){
+         setPin(trig, echo);
+    }
+
+    Sonar::Sonar(int universalPin){
+        _onePin = universalPin;
+        pinMode(_onePin,OUTPUT);
+    }
+
+void Sonar::setPin(int trig,int echo)
+    {
+        _echoPin = echo;
+        _trigPin = trig;
+        pinSetup();
+    }
+
 
   // Reading distance:
    void Sonar::readDistance(){
@@ -55,7 +69,33 @@
   //return _distance;
   }
 
-
+void Sonar::oneReadDistance(){
+    /*
+        --- Basic alghorithm: ---
+     1) Set pinMode(OUTPUT)
+     2) Generate ultrasonic signal
+     3) Change pinMode(INPUT)
+     4) Read signal and get time
+     5) Calculate distance value
+     Done!
+     */
+    
+    pinMode(_onePin, OUTPUT);
+    // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+    digitalWrite(_onePin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(_onePin, LOW);
+    
+    // Change pin mode to read signal:
+    pinMode(_onePin,INPUT);
+    //delay(1);
+    // Reads the echoPin, returns the sound wave travel time in microseconds
+     _oneDuration = pulseIn(_onePin, HIGH);
+    
+    // Calculating the distance
+    _distance = _duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+          
+}
 
 
   long Sonar::getDistance(){
