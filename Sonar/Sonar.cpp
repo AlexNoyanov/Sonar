@@ -24,9 +24,18 @@
 //      _serial.println(" cm");
 //  }
 
+      void Sonar::pinSetup(){
+    //    _echoPin = echo;
+    //    _trigPin = trig;
+          pinMode(_trigPin,OUTPUT);
+          pinMode(_echoPin,INPUT);
+      }
+
+
      Sonar::Sonar(int _trig,int _echo){
         _echoPin = _echo;
         _trigPin = _trig;
+         pinSetup();
     }
 
   // Reading distance:
@@ -47,10 +56,6 @@
   }
 
 
-  void Sonar::pinSetup(int echo,int trig){
-    _echoPin = echo;
-    _trigPin = trig;
-  }
 
 
   long Sonar::getDistance(){

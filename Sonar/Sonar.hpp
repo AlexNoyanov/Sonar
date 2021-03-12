@@ -28,6 +28,6 @@ class Sonar{
         Sonar(int _trig,int _echo);
         void serialTest();                  // For testing
         void readDistance();                // Read distance value
-        void pinSetup(int echo,int trig);   // Sensor Setup
+        void pinSetup();   // Sensor Setup
         long getDistance();                 // Get distance value
 };
