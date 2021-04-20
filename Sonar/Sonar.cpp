@@ -14,7 +14,6 @@
 *
 */
 
-
 #include "Sonar.hpp"
 
 // For Serial testing
@@ -32,16 +31,18 @@
       }
 
     Sonar::Sonar() {
-        
+        _objectCounter++;
     }
     
      Sonar::Sonar(int trig,int echo){
          setPin(trig, echo);
+         _objectCounter++;
     }
 
     Sonar::Sonar(int universalPin){
         _onePin = universalPin;
         pinMode(_onePin,OUTPUT);
+        _objectCounter++;
     }
 
 void Sonar::setPin(int trig,int echo)
@@ -101,4 +102,8 @@ void Sonar::oneReadDistance(){
   long Sonar::getDistance(){
     return _distance;
   }
+
+void Sonar::objectCounter(){
+    return _objectCounter;
+}
   

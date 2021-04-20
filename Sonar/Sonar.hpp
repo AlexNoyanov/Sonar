@@ -18,12 +18,16 @@
 
 #endif /* Sonar_hpp */
 
+//void sonarCounter(){
+//
+//}
+
 class Sonar {
     private:
       long _distance;                // Distance value
-      int _echoPin,_trigPin,_onePin;  // Sensor pins
+      int _echoPin,_trigPin,_onePin;   // Sensor pins
       long _duration,_oneDuration;     // Time to calculate distance value
-    
+      static int _objectCounter = 0;   // Number of created objects
     
     public:
         Sonar();
@@ -31,11 +35,10 @@ class Sonar {
         Sonar(int universalPin);           // Constructor for single pin solution
     
         void setPin(int trig,int echo);
-    
+        void objectCounter();
         void serialTest();                  // For testing
         void readDistance();                // Read distance value
         void pinSetup();                    // Sensor Setup
         long getDistance();                 // Get distance value
-    
-        void oneReadDistance();             // Read distance with one pin
+        void oneReadDistance();              // Read distance with one pin
 };
