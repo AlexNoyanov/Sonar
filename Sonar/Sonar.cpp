@@ -14,7 +14,9 @@
 *
 */
 
+
 #include "Sonar.hpp"
+
 
 // For Serial testing
 //  void Sonar::serialTest(Serial _serial){
@@ -31,19 +33,64 @@
       }
 
     Sonar::Sonar() {
-        _objectCounter++;
+       setWp(false);
     }
     
-     Sonar::Sonar(int trig,int echo){
+     Sonar::Sonar(int trig,int echo, bool isWp) //: mySerial(trig, echo)
+    {
          setPin(trig, echo);
-         _objectCounter++;
+         setWp(isWp);
     }
 
-    Sonar::Sonar(int universalPin){
+    Sonar::Sonar(int trig,int echo, bool isWp, bool isMM) //: mySerial(trig, echo)
+    {
+         setPin(trig, echo);
+         setWp(isWp);
+         setMM(isMM);
+    }
+
+    Sonar::Sonar(int trig,int echo) //: mySerial(trig, echo)
+    {
+         setPin(trig, echo);
+         setWp(false);
+    }
+
+#ifdef UNIPIN
+    Sonar::Sonar(int universalPin, bool isWp){
         _onePin = universalPin;
         pinMode(_onePin,OUTPUT);
-        _objectCounter++;
+        setWp(isWp);
     }
+
+    long Sonar::oneReadDistanceWp(){
+        /*
+            --- Basic alghorithm: ---
+         1) Set pinMode(OUTPUT)
+         2) Generate ultrasonic signal
+         3) Change pinMode(INPUT)
+         4) Read signal and get time
+         5) Calculate distance value
+         Done!
+         */
+        
+        pinMode(_onePin, OUTPUT);
+        // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+        digitalWrite(_onePin, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(_onePin, LOW);
+        
+        // Change pin mode to read signal:
+        pinMode(_onePin,INPUT);
+        //delay(1);
+        // Reads the echoPin, returns the sound wave travel time in microseconds
+         _oneDuration = pulseIn(_onePin, HIGH);
+        
+        // Calculating the distance
+        _distance = _duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+              
+    }
+
+#endif
 
 void Sonar::setPin(int trig,int echo)
     {
@@ -52,10 +99,30 @@ void Sonar::setPin(int trig,int echo)
         pinSetup();
     }
 
+void Sonar::setWp(bool wpMode){
+    _isWp = wpMode;
+    //Serial.begin(57600);
+    //mySerial.begin(9600);
+}
+
+void Sonar::setMM(bool isMM){
+    _isMM = isMM;
+}
 
   // Reading distance:
-   void Sonar::readDistance(){
+   void Sonar::readDistance()
+{    if(_isWp)
+         readDistanceWp();
+    else
+         readDistanceNWp();
+    
+}
+   void Sonar::readDistanceNWp()
+{
   // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+       
+       // Checking for waterproof:
+       //if()
   digitalWrite(_trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(_trigPin, LOW);
@@ -70,40 +137,30 @@ void Sonar::setPin(int trig,int echo)
   //return _distance;
   }
 
-void Sonar::oneReadDistance(){
-    /*
-        --- Basic alghorithm: ---
-     1) Set pinMode(OUTPUT)
-     2) Generate ultrasonic signal
-     3) Change pinMode(INPUT)
-     4) Read signal and get time
-     5) Calculate distance value
-     Done!
-     */
-    
-    pinMode(_onePin, OUTPUT);
-    // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
-    digitalWrite(_onePin, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(_onePin, LOW);
-    
-    // Change pin mode to read signal:
-    pinMode(_onePin,INPUT);
-    //delay(1);
-    // Reads the echoPin, returns the sound wave travel time in microseconds
-     _oneDuration = pulseIn(_onePin, HIGH);
-    
-    // Calculating the distance
-    _distance = _duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
-          
-}
+     void Sonar::readDistanceNWpMM()
+    {
+         digitalWrite(_trigPin, HIGH);
+         delayMicroseconds(10);
+         digitalWrite(_trigPin, LOW);
+              
+         // Reads the echoPin, returns the sound wave travel time in microseconds
+         _duration = pulseIn(_echoPin, HIGH);
+              
+         // Calculating the distance
+         _distance = _duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+    }
+
+    void Sonar::readDistanceWp(){
+        // 100;
+    }
 
 
   long Sonar::getDistance(){
     return _distance;
   }
-
-void Sonar::objectCounter(){
-    return _objectCounter;
-}
   
+// Waterproof sensor here:
+ WPSonar::WPSonar(int trig, int echo) : Sonar(trig, echo)//, _mySerial(echo, trig)
+{
+    setPin(trig, echo);
+}
