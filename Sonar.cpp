@@ -87,7 +87,7 @@
         
         // Calculating the distance
         _distance = _duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
-              
+        
     }
 
 #endif
@@ -111,11 +111,15 @@ void Sonar::setMM(bool isMM){
 
   // Reading distance:
    void Sonar::readDistance()
-{    if(_isWp)
+{    if(_isWp)                  // Checking for waterproof
          readDistanceWp();
     else
-         readDistanceNWp();
     
+    if(_isMM){              // Checking for mm
+        readDistanceNWpMM();;
+        }else{
+         readDistanceNWp();
+        }
 }
    void Sonar::readDistanceNWp()
 {
@@ -137,17 +141,39 @@ void Sonar::setMM(bool isMM){
   //return _distance;
   }
 
+//    long  microsecondsToMillimeters(long microseconds)
+//    {return microseconds / 2.9 / 2;}
+
      void Sonar::readDistanceNWpMM()
     {
-         digitalWrite(_trigPin, HIGH);
-         delayMicroseconds(10);
-         digitalWrite(_trigPin, LOW);
+        // The sensor is triggered by a HIGH pulse of 10 or more microseconds.
+        // Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
+//        digitalWrite(trigPin, LOW);
+//        delayMicroseconds(5);
+//        digitalWrite(trigPin, HIGH);
+//        delayMicroseconds(10);
+//        digitalWrite(trigPin, LOW);
+        
+        //pinMode(_trigPin, OUTPUT);
+        digitalWrite(_trigPin, LOW);
+        delayMicroseconds(2000);
+        digitalWrite(_trigPin, HIGH);
+        delayMicroseconds(1000);
+        digitalWrite(_trigPin, LOW);
+        pinMode(_echoPin, INPUT);
+        
+        _duration = pulseIn(_echoPin, HIGH);
+        
+//         digitalWrite(_trigPin, HIGH);
+//         delayMicroseconds(10);
+//         digitalWrite(_trigPin, LOW);
               
          // Reads the echoPin, returns the sound wave travel time in microseconds
-         _duration = pulseIn(_echoPin, HIGH);
+         //_duration = pulseIn(_echoPin, HIGH);
               
          // Calculating the distance
-         _distance = _duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+         //_distance = _duration * 0.0343 / 2; // Speed of sound wave divided by 2 (go and back)
+        _distance = _duration / 2.9 / 2;
     }
 
     void Sonar::readDistanceWp(){

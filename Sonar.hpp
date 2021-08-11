@@ -33,7 +33,6 @@ class Sonar {
       bool _isWp;                   // Set for waterproof sonar
       bool _isMM;                   // Is values in mm ()
     
-    
 //      SoftwareSerial mySerial(11,10); // RX, TX
       //SoftwareSerial mySerial; // RX, TX
       unsigned char data[4];
@@ -57,7 +56,7 @@ class Sonar {
         void serialTest();                  // For testing
         void readDistance();                // Read distance value
         
-        void readDistanceNWpMM();           // Read distance value
+        void readDistanceNWpMM();            // Read distance value
     
         void pinSetup();                    // Sensor Setup
         long getDistance();                 // Get distance value
