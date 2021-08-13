@@ -14,9 +14,7 @@
 *
 */
 
-
 #include "Sonar.hpp"
-
 
 // For Serial testing
 //  void Sonar::serialTest(Serial _serial){
@@ -107,6 +105,10 @@ void Sonar::setWp(bool wpMode){
 
 void Sonar::setMM(bool isMM){
     _isMM = isMM;
+}
+
+bool Sonar::isMM(){
+    return _isMM;
 }
 
   // Reading distance:

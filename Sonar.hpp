@@ -51,7 +51,9 @@ class Sonar {
         void setPin(int trig,int echo);
     
         void setWp(bool wpMode);            // Setting the waterproof
-        void setMM(bool isMM);
+        void setMM(bool isMM);              // Setting to mm
+    
+        bool isMM();                        // Show is in mm 
     
         void serialTest();                  // For testing
         void readDistance();                // Read distance value
